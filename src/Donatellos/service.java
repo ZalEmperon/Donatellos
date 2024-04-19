@@ -177,12 +177,3 @@ public class service {
     return 0;
   }
 }
-
-// interface Innerservice {
-//   void HitungPembelian();
-//   void HitungPenjualan();
-//   void updateProduk();
-//   void updateBarang();
-//   void cetakPenjualan();
-//   void cetakPembelian();
-// }
