@@ -26,10 +26,10 @@ class Produk {
 
 abstract class Transaksi {
   protected String tanggal;
-  protected int jumlah, harga;
-  public Transaksi(int jumlah, int harga, String tanggal) {
+  protected int jumlah;
+  protected double harga;
+  public Transaksi(int jumlah, double harga, String tanggal) {
     setJumlah(jumlah);
-    setharga(harga);
     // jika isi tanggal = 0 maka set tanggal menjadi hari ini
     if (tanggal.equals("0")) {
       setTanggal();
@@ -40,7 +40,7 @@ abstract class Transaksi {
   public int getJumlah() {
     return jumlah;
   }
-  public int getharga() {
+  public double getharga() {
     return harga;
   }
   public String getTanggal() {
@@ -49,9 +49,7 @@ abstract class Transaksi {
   protected void setJumlah(int jumlah) {
     this.jumlah = jumlah;
   }
-  protected void setharga(int harga) {
-    this.harga = harga;
-  }
+  protected abstract void setharga(double harga);
   protected void setTanggal() { // mendapatkan tanggal hari ini lalu set
     LocalDate waktuSekarang = LocalDate.now();
     DateTimeFormatter tanggal = DateTimeFormatter.ofPattern("dd-MM-yyyy");
@@ -62,9 +60,14 @@ abstract class Transaksi {
 
 class Pembelian extends Transaksi{
   protected String barang;
-  public Pembelian(String barang, int jumlah, int harga, String tanggal) {
+  public Pembelian(String barang, int jumlah, double harga, String tanggal) {
     super(jumlah, harga, tanggal);
     setBarang(barang);
+    setharga(harga);
+  }
+  @Override
+  protected void setharga(double harga) {
+    this.harga = harga;
   }
   public String getBarang() {
     return barang;
@@ -72,7 +75,7 @@ class Pembelian extends Transaksi{
   protected void setBarang(String barang) {
     this.barang = barang;
   }
-  public void updateBarang(String barang, int jumlah, int harga, String tanggal){
+  public void updateBarang(String barang, int jumlah, double harga, String tanggal){
     setBarang(barang);
     setJumlah(jumlah);
     setharga(harga);
@@ -84,9 +87,24 @@ class Pembelian extends Transaksi{
 
 class Penjualan extends Transaksi{
   protected String namaProduk;
-  public Penjualan(String namaProduk, int jumlah, int harga, String tanggal) {
+  protected double diskon;
+  public Penjualan(String namaProduk, int jumlah, double harga, double diskon, String tanggal) {
     super(jumlah, harga, tanggal);
+    setDiskon(diskon);
     setNamaProduk(namaProduk);
+    setharga(harga, diskon);
+  }
+  @Override
+  protected void setharga(double harga) {
+    this.harga = harga;
+  }
+
+  protected void setDiskon(double diskon){
+    this.diskon = diskon;
+  }
+
+  protected void setharga(double harga, double diskon) {
+    this.harga = harga - (harga*(diskon/100));
   }
   public String getNamaProduk() {
     return namaProduk;
@@ -94,7 +112,10 @@ class Penjualan extends Transaksi{
   protected void setNamaProduk(String namaProduk) {
     this.namaProduk = namaProduk;
   }
-  public void updateProduk(String barang, int jumlah, int harga, String tanggal){
+  protected double getDiskon(){
+    return diskon;
+  }
+  public void updateProduk(String barang, int jumlah, double harga, String tanggal){
     setNamaProduk(barang);
     setJumlah(jumlah);
     setharga(harga);

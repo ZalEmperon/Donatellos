@@ -13,7 +13,8 @@ public class service {
   // Menampung Data catatan pembelian donat
   ArrayList<Pembelian> catatBeli = new ArrayList<>();
   Scanner input = new Scanner(System.in);
-  int inputan, harga, jumlah, i, total, waktu;
+  int inputan, jumlah, i, total, waktu;
+  double harga, diskon;
   String namaProduk, barang, tanggal;
 
   private Boolean cariTanggal(int tipe, int tanggal1, String tanggal2) {
@@ -49,11 +50,14 @@ public class service {
     System.out.print("Masukan Jumlah Produk  : ");
     jumlah = input.nextInt();
     input.nextLine();
+    System.out.print("Masukkan Jumlah Diskon  : ");
+    diskon = input.nextInt();
+    input.nextLine();
     System.out.print("Masukan Tanggal Produk [dd-mm-yyyy]\n(0 untuk hari ini) : ");
     tanggal = input.nextLine();
     harga = produkDicari.getHarga() * jumlah;
     // menambah objek Penjualan ke arraylist
-    catatJual.add(new Penjualan(namaProduk, jumlah, harga, tanggal));
+    catatJual.add(new Penjualan(namaProduk, jumlah, harga, diskon, tanggal));
   }
 
   public void HitungPembelian() {
@@ -79,11 +83,11 @@ public class service {
       System.out.print("Pada Waktu apa : ");
       waktu = input.nextInt();
       System.out.println("== Data Penjualan ==");
-      System.out.printf("%-15s %-10s %-10s %-10s\n", "Nama Produk", "Jumlah", "Harga", "Tanggal");
+      System.out.printf("%-15s %-10s %-10s %-10s %-10s\n", "Nama Produk", "Jumlah", "Harga", "Diskon", "Tanggal");
       for (Penjualan produkJual : catatJual) { // loop isi objek dari arraylist
         if (cariTanggal(inputan, waktu, produkJual.getTanggal())) {
-          System.out.printf("%-15s %-10d %-10d %-10s\n", produkJual.getNamaProduk(),
-              produkJual.getJumlah(), produkJual.getharga(), produkJual.getTanggal());
+          System.out.printf("%-15s %-10d %-10d %-10s %-10s\n", produkJual.getNamaProduk(),
+              produkJual.getJumlah(), (int)produkJual.getharga(), String.format("%d", (int)produkJual.getDiskon())+'%', produkJual.getTanggal());
           total += produkJual.getharga();
         }
       }
@@ -102,7 +106,7 @@ public class service {
       System.out.printf("%-15s %-10s %-10s %-10s\n", "Nama barang", "Jumlah", "Harga", "Tanggal");
       for (Pembelian barangBeli : catatBeli) { // loop isi objek dari arraylist
         if (cariTanggal(inputan, waktu, barangBeli.getTanggal())) {
-          System.out.printf("%-15s %-10d %-10d %-10s\n", barangBeli.getBarang(),
+          System.out.printf("%-15s %-10d %-10f %-10s\n", barangBeli.getBarang(),
               barangBeli.getJumlah(), barangBeli.getharga(), barangBeli.getTanggal());
           total += barangBeli.getharga();
         }
@@ -177,12 +181,3 @@ public class service {
     return 0;
   }
 }
-
-// interface Innerservice {
-//   void HitungPembelian();
-//   void HitungPenjualan();
-//   void updateProduk();
-//   void updateBarang();
-//   void cetakPenjualan();
-//   void cetakPembelian();
-// }
